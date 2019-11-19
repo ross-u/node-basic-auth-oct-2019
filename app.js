@@ -9,6 +9,7 @@ const session = require('express-session');
 const MongoStore = require('connect-mongo')(session);
 
 var router = require('./routes/index');
+var siteRouter = require('./routes/site-routes');
 
 var app = express();
 
@@ -27,11 +28,12 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+
 // Before the routes
-// SESSION ( & COOKIES ) MIDDLEWARE
+// SESSION ( & COOKIES ) MIDDLEWARE   -- req.session.currentUser
 app.use(
   session({
-    secret: 'bananarama milkshake',
+    secret: process.env.SESSION_SECRET,
     // cookie: { maxAge: 3600000 } // 1 hour
     resave: true,
     saveUninitialized: false,
@@ -42,8 +44,11 @@ app.use(
   }),
 );
 
+
+
 // Routes
-app.use('/', router);
+app.use('/', router);  // '/' , '/login' '/auth' '/signup'
+app.use('/', siteRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
