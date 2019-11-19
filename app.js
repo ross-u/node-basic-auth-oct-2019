@@ -8,6 +8,8 @@ const mongoose = require('mongoose');
 const session = require('express-session');
 const MongoStore = require('connect-mongo')(session);
 
+require('dotenv').config();
+
 var router = require('./routes/index');
 var siteRouter = require('./routes/site-routes');
 
