@@ -5,6 +5,9 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const mongoose = require('mongoose');
 
+const session = require('express-session');
+const MongoStore = require('connect-mongo')(session);
+
 var router = require('./routes/index');
 
 var app = express();
@@ -23,6 +26,21 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+
+// Before the routes
+// SESSION ( & COOKIES ) MIDDLEWARE
+app.use(
+  session({
+    secret: 'bananarama milkshake',
+    // cookie: { maxAge: 3600000 } // 1 hour
+    resave: true,
+    saveUninitialized: false,
+    store: new MongoStore({
+      mongooseConnection: mongoose.connection,
+      ttl: 60 * 60 * 24 * 7, // Default - 14 days
+    }),
+  }),
+);
 
 // Routes
 app.use('/', router);
