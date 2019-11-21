@@ -18,7 +18,6 @@ router.use((req, res, next) => {
 //     | 
 //     V
 
-
 router.get("/secret/one", (req, res, next) => {
   res.render("secret-one");
 });
